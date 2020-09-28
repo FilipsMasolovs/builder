@@ -17,6 +17,7 @@ export default class HelperContainer extends React.Component {
   }
 
   render () {
+    const { onActiveChange, onNextClick, onCloseGuide, isActive, isLast } = this.props
     const helperClasses = classNames({
       'vcv-helper-wrapper': true
     })
@@ -24,7 +25,7 @@ export default class HelperContainer extends React.Component {
     const iconClasses = classNames({
       'vcv-ui-icon': true,
       'vcv-ui-icon-question': true,
-      'vcv-ui-icon-selected': this.props.helperData.activeStep === this.props.helperData.step
+      'vcv-ui-icon-selected': isActive
     })
 
     const styleProps = {
@@ -33,11 +34,11 @@ export default class HelperContainer extends React.Component {
     }
 
     let buttonText = 'Next Tip'
-    if (this.props.helperData.activeStep === 7) {
+    if (isLast) {
       buttonText = 'Done!'
     }
     let helperContent = null
-    if (this.props.helperData.activeStep === this.props.helperData.step) {
+    if (isActive) {
       helperContent = (
         <div className={helperClasses}>
           <h2 className='vcv-helper-container-heading'>{this.props.helperData.heading}</h2>
@@ -46,13 +47,13 @@ export default class HelperContainer extends React.Component {
             <span className='vcv-helper-container-done'>Done?</span>
             <span
               className='vcv-helper-container-skip'
-              onClick={() => { this.props.onClick(8) }}
+              onClick={onCloseGuide}
             >
               Click here to skip
             </span>
             <button
               className='vcv-helper-container-next'
-              onClick={() => { this.props.onClick(this.props.helperData.step + 1) }}
+              onClick={isLast ? onCloseGuide : onNextClick}
             >
               {buttonText}
             </button>
@@ -64,11 +65,11 @@ export default class HelperContainer extends React.Component {
     let helperImage = null
     if (this.props.helperData.step === 2) {
       helperImage = (
-        <div className="vcv-helper-container-image element-controls"></div>
+        <div className='vcv-helper-container-image element-controls' />
       )
     } else if (this.props.helperData.step === 3) {
       helperImage = (
-        <div className="vcv-helper-container-image bottom-menu"></div>
+        <div className='vcv-helper-container-image bottom-menu' />
       )
     }
 
@@ -76,7 +77,7 @@ export default class HelperContainer extends React.Component {
       <div className='vcv-helper-container' style={styleProps}>
         <i
           className={iconClasses}
-          onClick={() => { this.props.onClick(this.props.helperData.step ) }}
+          onClick={onActiveChange.bind(this, this.props.helperData.step)}
         />
         {helperContent}
         {helperImage}
